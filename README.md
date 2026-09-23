@@ -9,6 +9,7 @@ Geo-location detection service using Cloudflare Workers to dynamically personali
 ```bash
 npm install          # Install dependencies
 npm run dev          # Start local development (http://localhost:8787)
+npm run check        # Typecheck worker.js + client.js and syntax-check both
 npm run deploy       # Deploy to Cloudflare Workers
 ```
 
@@ -41,10 +42,10 @@ No environment variables required. Configuration is handled through:
 
 - **Development**: `npm run dev` provides local logs at http://localhost:8787
 - **Production**: `wrangler tail` streams live logs from deployed worker
-- **Client Logs**: Errors sent to worker's `/log` endpoint (silent fail on logging errors)
+- **Client Logs**: `client.js` POSTs progress/info logs to the worker's `/log` endpoint (logged as `[CLIENT_<LEVEL>]`) and caught errors to `/log-error` (logged as `[CLIENT_ERROR]`); both fail silently on the client
 
 ## Customization
 
-- **Headlines**: Edit state content mappings in `worker.js` (lines 45-56)
-- **Target Elements**: Update selectors in `client.js` (lines 3-7)
+- **Headlines**: Edit per-state data in the `US_STATES` array and the `generate*Headline` templates in `worker.js`; `STATE_CONTENT` builds the per-state lookup from them
+- **Target Elements**: Update the `*_SELECTOR` constants at the top of `client.js`
 - **Cache Duration**: Modify `max-age` in worker.js response headers (default: 3600s)

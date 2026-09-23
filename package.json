@@ -5,15 +5,18 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "build": "terser client.js -o dist/client.min.js -c -m"
+    "build": "terser client.js -o dist/client.min.js -c -m",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.client.json",
+    "check": "npm run typecheck && node --check worker.js && node --check client.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "Geo IP detection for landing pages",
   "devDependencies": {
-    "cursor-tools": "latest",
+    "@cloudflare/workers-types": "^4.20260702.1",
     "terser": "^5.36.0",
+    "typescript": "^7.0.2",
     "wrangler": "^4.7.1"
   }
 }

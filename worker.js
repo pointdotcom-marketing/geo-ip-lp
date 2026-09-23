@@ -1,4 +1,19 @@
+/**
+ * @typedef {{ code: string, name: string, avgAmount?: number }} UsState
+ * @typedef {{ name: string, avgAmount?: number }} NamedState
+ * @typedef {{
+ *   code: string,
+ *   name: string,
+ *   avgAmount: number | undefined,
+ *   headline: string,
+ *   avgPageHeadline: string | null,
+ *   avgHeadline: string | null,
+ *   footnote: string | null,
+ * }} StateContent
+ */
+
 // List of US states with average amounts
+/** @type {UsState[]} */
 const US_STATES = [
   { code: "AZ", name: "Arizona", avgAmount: 88000 },
   { code: "CA", name: "California", avgAmount: 145000 },
@@ -32,24 +47,32 @@ const US_STATES = [
 ];
 
 // Template function for headlines
+/**
+ * @param {NamedState} state
+ * @param {string} [amount]
+ */
 function generateHeadline(state, amount = "600k") {
   return `Get up to $${amount} from your <br><span class="headline-underline-decoration">home equity</span> in ${state.name}.`;
 }
 
+/** @param {NamedState} state Only called for states that define avgAmount. */
 function generateAvgPageHeadline(state) {
-  return `Qualified ${state.name} homeowners get <span class="headline-underline-decoration">$${state.avgAmount.toLocaleString()}</span> on average.`;
+  return `Qualified ${state.name} homeowners get <span class="headline-underline-decoration">$${/** @type {number} */ (state.avgAmount).toLocaleString()}</span> on average.`;
 }
 
+/** @param {NamedState} state Only called for states that define avgAmount. */
 function generateStateSocialProofHeadline(state) {
-  return `Qualified homeowners in ${state.name} get an average of $${state.avgAmount.toLocaleString()} from Point's Home Equity Investment`;
+  return `Qualified homeowners in ${state.name} get an average of $${/** @type {number} */ (state.avgAmount).toLocaleString()} from Point's Home Equity Investment`;
 }
 
+/** @param {NamedState} state Only called for states that define avgAmount. */
 function generateStartUsSocialProofHeadline(state) {
-  return `Homeowners love getting cash from Point's home equity products. In ${state.name}, qualified homeowners average $${state.avgAmount.toLocaleString()}.`;
+  return `Homeowners love getting cash from Point's home equity products. In ${state.name}, qualified homeowners average $${/** @type {number} */ (state.avgAmount).toLocaleString()}.`;
 }
 
+/** @param {NamedState} state Only called for states that define avgAmount. */
 function addStateAvgFootnote(state) {
-  return `Qualified homeowners in ${state.name} get an average of  $${state.avgAmount.toLocaleString()} from Point's Home Equity Investment`;
+  return `Qualified homeowners in ${state.name} get an average of  $${/** @type {number} */ (state.avgAmount).toLocaleString()} from Point's Home Equity Investment`;
 }
 
 // const HELOC_DEFAULT_HEADLINE = `Get a HELOC quote with <span class="headline-underline-decoration">no impact</span> to your credit.`;
@@ -74,9 +97,13 @@ const STATE_CONTENT = US_STATES.reduce((acc, state) => {
   acc[state.name.toUpperCase()] = content;
 
   return acc;
-}, {});
+}, /** @type {Record<string, StateContent>} */ ({}));
 
 // Add debugging to getStateContent function
+/**
+ * @param {string | undefined} region
+ * @returns {StateContent | null}
+ */
 function getStateContent(region) {
   if (!region) {
     return null;
@@ -95,6 +122,11 @@ function getStateContent(region) {
 }
 
 export default {
+  /**
+   * @param {Request<unknown, IncomingRequestCfProperties>} request
+   * @param {unknown} env
+   * @param {ExecutionContext} ctx
+   */
   async fetch(request, env, ctx) {
     const startTime = Date.now();
     const requestId = crypto.randomUUID();

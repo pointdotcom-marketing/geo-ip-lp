@@ -2,15 +2,13 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "watch:build-client",
-      "type": "shell",
-      "command": "bun",
-      "args": ["build", "/Users/austin/code/point.com/geo-ip-lp/client.js", "--minify", "--outfile", "/Users/austin/code/point.com/geo-ip-lp/dist/client.min.js", "--watch"],
+      "label": "build-client",
+      "type": "npm",
+      "script": "build",
       "options": {
-        "cwd": "/Users/austin/code/point.com/geo-ip-lp"
+        "cwd": "${workspaceFolder}"
       },
       "problemMatcher": [],
-      "isBackground": true,
       "group": {
         "kind": "build",
         "isDefault": true
