@@ -7,6 +7,11 @@
     const AVG_HOMEOWNER_SELECTOR = "#avg-homeowner"; // Added AVG_HOMEOWNER_SELECTOR
 
     // Function to send logs to worker
+    /**
+     * @param {"info" | "warn" | "error"} level
+     * @param {string} message
+     * @param {Record<string, unknown>} [data]
+     */
     async function serverLog(level, message, data = {}) {
       try {
         await fetch(`${WORKER_URL}log`, {
@@ -28,6 +33,10 @@
     }
 
     // Function to report errors to worker
+    /**
+     * @param {any} error Error object, message string, or rejection reason.
+     * @param {string | Record<string, unknown>} context
+     */
     async function reportError(error, context) {
       try {
         await fetch(`${WORKER_URL}log-error`, {
@@ -124,7 +133,7 @@
             const orderedList = footnoteElement.querySelector("ol");
             if (orderedList) {
               // Store the existing legal text content
-              const existingLegalText = orderedList.querySelector("li").textContent;
+              const existingLegalText = /** @type {HTMLLIElement} */ (orderedList.querySelector("li")).textContent;
 
               // Clear and recreate the list
               orderedList.innerHTML = "";
@@ -153,7 +162,7 @@
           country: data.country,
         });
       } catch (error) {
-        await serverLog("error", "Error fetching or applying geo data", { error: error.message });
+        await serverLog("error", "Error fetching or applying geo data", { error: /** @type {any} */ (error).message });
         await reportError(error, "updateHeadline_error");
       }
     }

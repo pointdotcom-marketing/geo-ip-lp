@@ -106,7 +106,6 @@ This repository provides a simple geo-detection system. It uses Cloudflare Worke
 ## Dependencies
 
 - **`wrangler`:** Cloudflare Workers CLI for development and deployment.
-- **`cursor-tools`:** Development dependency, likely used for repository automation and documentation (based on `.cursorrules` file, but not directly required for the core Geo IP functionality).
 
 ## Customization
 
