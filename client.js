@@ -5,6 +5,10 @@
     const SOCIAL_PROOF_HEADLINE_SELECTOR = "#avg-homeowner"; // Selector for the avg-homeowner element
     const AVG_HOMEOWNER_FOOTNOTE_SELECTOR = "#footnote-rtf"; // Selector for the footnote-rtf element to update with avg amount details.
     const AVG_HOMEOWNER_SELECTOR = "#avg-homeowner"; // Added AVG_HOMEOWNER_SELECTOR
+    const AMOUNT_SELECTOR = "[data-geo-amount]"; // Span wrapping the headline dollar amount (in thousands)
+    const STATE_ANCHOR_SELECTOR = ".headline-underline-decoration"; // State name is appended after this span
+    const AMOUNT_ANIMATION_MS = 700;
+    const MAX_LOOKUP_MS = 2000; // Skip the amount update if the lookup is slower than this, to avoid a late flicker
 
     // Function to send logs to worker
     async function serverLog(level, message, data = {}) {
@@ -48,11 +52,87 @@
       }
     }
 
+    function prefersReducedMotion() {
+      return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    function easeOutCubic(progress) {
+      return 1 - Math.pow(1 - progress, 3);
+    }
+
+    function animateAmount(element, from, to) {
+      return new Promise((resolve) => {
+        let startTime = null;
+
+        function step(now) {
+          if (startTime === null) startTime = now;
+          const progress = Math.min((now - startTime) / AMOUNT_ANIMATION_MS, 1);
+          element.textContent = String(Math.round(from + (to - from) * easeOutCubic(progress)));
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          } else {
+            resolve();
+          }
+        }
+
+        requestAnimationFrame(step);
+      });
+    }
+
+    // Lock the span to its widest value so the surrounding text never moves mid-animation
+    function reserveWidth(element, values) {
+      const original = element.textContent;
+      const widths = values.map((value) => {
+        element.textContent = String(value);
+        return element.getBoundingClientRect().width;
+      });
+      element.textContent = original;
+      element.style.minWidth = `${Math.ceil(Math.max(...widths))}px`;
+    }
+
+    // Returns true if the displayed amount changed
+    async function updateAmount(element, target) {
+      const current = parseInt(element.textContent, 10);
+      if (current === target) return false;
+
+      if (Number.isNaN(current) || prefersReducedMotion()) {
+        element.textContent = String(target);
+      } else {
+        reserveWidth(element, [current, target]);
+        await animateAmount(element, current, target);
+        element.style.minWidth = ""; // Release so fonts without tabular digits don't keep a gap
+      }
+      element.dataset.geoAmount = String(target);
+      return true;
+    }
+
+    function appendStateName(headline, stateName) {
+      if (!stateName || headline.dataset.geoStateAppended) return false;
+      const anchor = headline.querySelector(STATE_ANCHOR_SELECTOR);
+      if (!anchor) return false;
+
+      anchor.after(document.createTextNode(` in ${stateName}`));
+      headline.dataset.geoStateAppended = "true";
+      return true;
+    }
+
+    async function applyHeadlineAmount(headline, amountElement, data, fetchTime) {
+      if (fetchTime > MAX_LOOKUP_MS) {
+        serverLog("info", "Skipped headline amount update (slow lookup)", { fetchTimeMs: fetchTime.toFixed(2) });
+        return false;
+      }
+
+      const amountChanged = await updateAmount(amountElement, data.amount);
+      const stateAppended = appendStateName(headline, data.stateName);
+      serverLog("info", "Updated headline amount", { amount: data.amount, amountChanged, stateAppended });
+      return amountChanged || stateAppended;
+    }
+
     async function updateHeadline() {
       const startTime = performance.now();
 
       try {
-        await serverLog("info", "Fetching geo data from worker");
+        serverLog("info", "Fetching geo data from worker");
         // Pass pathname as query parameter for reliable path detection (fallback if referer is blocked)
         const pathname = window.location.pathname;
         const workerUrl = `${WORKER_URL}${pathname ? `?path=${encodeURIComponent(pathname)}` : ""}`;
@@ -60,15 +140,15 @@
 
         if (!response.ok) {
           const error = new Error(`Network response was not ok: ${response.status}`);
-          await serverLog("error", "Fetch failed", { status: response.status });
-          await reportError(error, "fetch_failed");
+          serverLog("error", "Fetch failed", { status: response.status });
+          reportError(error, "fetch_failed");
           throw error;
         }
 
         const data = await response.json();
         const fetchTime = performance.now() - startTime;
 
-        await serverLog("info", "Geo data received", {
+        serverLog("info", "Geo data received", {
           ...data,
           fetchTimeMs: fetchTime.toFixed(2),
           requestId: response.headers.get("X-Request-Id"),
@@ -76,22 +156,27 @@
         });
 
         let elementsUpdated = [];
+        let headlineAmountUpdate = null;
 
         // Only update if we have a US state headline
         if (data.headline) {
           const headlines = document.querySelectorAll(HEADLINE_SELECTOR);
-          await serverLog("info", `Found ${headlines.length} headline elements`);
+          serverLog("info", `Found ${headlines.length} headline elements`);
+          const amountElement = headlines[0]?.querySelector(AMOUNT_SELECTOR);
 
-          if (headlines.length > 0) {
+          if (amountElement && Number.isFinite(data.amount)) {
+            // Runs alongside the other updates; awaited before the final log
+            headlineAmountUpdate = applyHeadlineAmount(headlines[0], amountElement, data, fetchTime);
+          } else if (headlines.length > 0) {
             headlines[0].innerHTML = data.headline; // Use innerHTML since we're receiving HTML content
-            await serverLog("info", "Updated headline with state-specific content");
+            serverLog("info", "Updated headline with state-specific content");
             elementsUpdated.push("headline");
           } else {
-            await serverLog("warn", "No headlines found", { selector: HEADLINE_SELECTOR });
-            await reportError(new Error("No headline elements found"), { selector: HEADLINE_SELECTOR, hasHeadlineData: true });
+            serverLog("warn", "No headlines found", { selector: HEADLINE_SELECTOR });
+            reportError(new Error("No headline elements found"), { selector: HEADLINE_SELECTOR, hasHeadlineData: true });
           }
         } else {
-          await serverLog("info", "No headline available for location", {
+          serverLog("info", "No headline available for location", {
             country: data.country,
             region: data.region,
             stateAbbr: data.stateAbbr,
@@ -107,14 +192,14 @@
             const isStartUsaHea = pathname.includes("/start/usa/hea");
             const superscript = isStartUs ? "" : `<sup class="headline-superscript">1</sup>`;
             avgHomeowner.innerHTML = `${data.avgHeadline}${superscript}`;
-            await serverLog("info", "Updated avg-homeowner element");
+            serverLog("info", "Updated avg-homeowner element");
             elementsUpdated.push("avgHomeowner");
           } else {
             avgHomeowner.textContent = "Homeowners love getting cash from Point's home equity products.";
-            await serverLog("info", "Set avg-homeowner element to default text (state not approved)");
+            serverLog("info", "Set avg-homeowner element to default text (state not approved)");
           }
         } else {
-          await serverLog("warn", "No avg-homeowner element found", { selector: AVG_HOMEOWNER_SELECTOR });
+          serverLog("warn", "No avg-homeowner element found", { selector: AVG_HOMEOWNER_SELECTOR });
         }
 
         // Update footnote element if available
@@ -136,25 +221,29 @@
               listItem.innerHTML = `${data.footnote}.<br><br>${existingLegalText}`;
               orderedList.appendChild(listItem);
 
-              await serverLog("info", "Updated footnote with state-specific content");
+              serverLog("info", "Updated footnote with state-specific content");
               elementsUpdated.push("footnote");
             } else {
-              await serverLog("warn", "No ordered list found in footnote element");
+              serverLog("warn", "No ordered list found in footnote element");
             }
           } else {
-            await serverLog("warn", "No footnote element found", { selector: AVG_HOMEOWNER_FOOTNOTE_SELECTOR });
+            serverLog("warn", "No footnote element found", { selector: AVG_HOMEOWNER_FOOTNOTE_SELECTOR });
           }
         }
 
+        if (headlineAmountUpdate && (await headlineAmountUpdate)) {
+          elementsUpdated.push("headline");
+        }
+
         const totalTime = performance.now() - startTime;
-        await serverLog("info", `Page personalization complete in ${totalTime.toFixed(2)}ms`, {
+        serverLog("info", `Page personalization complete in ${totalTime.toFixed(2)}ms`, {
           elementsUpdated,
           state: data.stateName || "Default",
           country: data.country,
         });
       } catch (error) {
-        await serverLog("error", "Error fetching or applying geo data", { error: error.message });
-        await reportError(error, "updateHeadline_error");
+        serverLog("error", "Error fetching or applying geo data", { error: error.message });
+        reportError(error, "updateHeadline_error");
       }
     }
 

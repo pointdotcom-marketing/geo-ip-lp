@@ -31,6 +31,9 @@ const US_STATES = [
   { code: "WI", name: "Wisconsin", avgAmount: 61000 },
 ];
 
+// Headline amount (in thousands of dollars) shown on /start/united-states
+const START_US_AMOUNT_K = 750;
+
 // Template function for headlines
 function generateHeadline(state, amount = "600k") {
   return `Get up to $${amount} from your <br><span class="headline-underline-decoration">home equity</span> in ${state.name}.`;
@@ -220,10 +223,12 @@ export default {
 
     // Generate headline with appropriate amount based on path
     let headline = stateContent?.headline ?? null;
+    let amount = null;
     if (isAvgPage) {
       headline = stateContent?.avgPageHeadline ?? null;
     } else if (headline && isStartUs) {
-      headline = headline.replace(/\$600k/g, "$750k").replace(/600k/g, "750k");
+      headline = headline.replace(/\$600k/g, `$${START_US_AMOUNT_K}k`).replace(/600k/g, `${START_US_AMOUNT_K}k`);
+      amount = START_US_AMOUNT_K;
     }
     if (isStartUsaHea) {
       headline = null;
@@ -256,6 +261,7 @@ export default {
 
     const response = {
       headline: headline,
+      amount: amount,
       avgHeadline: avgHeadline,
       footnote: footnote,
       country: cf?.country || "Unknown",
