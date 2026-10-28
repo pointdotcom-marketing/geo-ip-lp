@@ -1,6 +1,8 @@
 # Moving geo-ip into pdc-code
 
-Plan for moving this worker into `pdc-code/workers/` and serving its client scripts from the Point CDN (`https://files.point.com/code/`). Not started.
+Plan for moving this worker into `pdc-code/workers/` (PNT-1375).
+
+**Done (PNT-1374):** the client scripts now live in pdc-code `src/page/start/` and the six /start pages load them from `https://files.point.com/code/staging/page/start/` (switch to `/prod/` when shipping). The table below is what remains for the worker.
 
 ## Why
 

@@ -4,8 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "build": "terser client.js -o dist/client.min.js -c -m && terser reno-client.js -o dist/reno-client.min.js -c -m"
+    "deploy": "wrangler deploy"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +12,6 @@
   "description": "Geo IP detection for landing pages",
   "devDependencies": {
     "cursor-tools": "latest",
-    "terser": "^5.36.0",
     "wrangler": "^4.7.1"
   }
 }

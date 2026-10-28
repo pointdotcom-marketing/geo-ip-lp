@@ -15,23 +15,21 @@ npm run deploy       # Deploy to Cloudflare Workers
 ### Integration Steps
 
 1. **Deploy Worker**: Run `npm run deploy` to deploy the geo-detection service
-2. **Update Client URL**: Edit `WORKER_URL` in `client.js` with your deployed worker URL
-3. **Add to Webflow**: Copy `client.js` contents to your site's custom code section
-4. **Configure Selectors**: Update DOM selectors in client.js as needed
+2. **Client scripts**: live in pdc-code (`src/page/start/geo-personalization.js` and `src/page/start/home-reno-geo.js`), served from `https://files.point.com/code/{staging,prod}/page/start/`. Each /start page's footer custom code loads one with a `<script src>` tag.
 
 ## Architecture
 
 - **worker.js**: Cloudflare Worker handling geo-detection via `request.cf.region` API
-- **client.js**: Browser script (IIFE pattern) that fetches location and updates DOM
+- **Client scripts**: in pdc-code `src/page/start/` (see above)
 - **wrangler.toml**: Worker configuration (name: geo-ip-detector)
 
 ## Home Reno Page (`/start/home-reno`)
 
-Separate endpoint and client script; the original `/` response and `client.js` are untouched.
+Separate endpoint; the original `/` response is untouched.
 
 - **Endpoint**: `GET /home-reno` returns `{ stateAbbr, stateName, tokens }` with tokens `state`, `reno.avg`, `homeValue.pct`, `homeValue.source`. Outside operating states it returns `stateName: null` and no tokens. `?state=CO` previews a state.
 - **Data**: `reno-costs.js` is a hand-updated snapshot; method and sources are in `RENO_COSTS.md`.
-- **Client**: `reno-client.js` (minified to `dist/reno-client.min.js` by `npm run build`), pasted into the page's footer custom code in Webflow. An element with `data-geo-template` gets that text with `{token}`s filled in; if any token is missing it shows `data-geo-fallback` instead. `data-geo-group` on a wrapper makes its templated children switch together.
+- **Client**: pdc-code `src/page/start/home-reno-geo.js`, loaded from the CDN in the page's footer custom code. An element with `data-geo-template` gets that text with `{token}`s filled in; if any token is missing it shows `data-geo-fallback` instead. `data-geo-group` on a wrapper makes its templated children switch together.
 - **QA**: add `?geo-state=CO` to the page URL to preview a state, or `?geo-state=TX` to see fallbacks. Responses are cached for an hour.
 
 | Element | `data-geo-template` | `data-geo-fallback` |
@@ -43,8 +41,7 @@ Separate endpoint and client script; the original `/` response and `client.js` a
 ## Environment Variables
 
 No environment variables required. Configuration is handled through:
-- `WORKER_URL` constant in client.js (must be updated post-deployment)
-- DOM selectors in client.js for targeting page elements
+- `WORKER_URL` and DOM selectors in the pdc-code client scripts
 
 ## Assumptions & Trade-offs
 
@@ -61,5 +58,5 @@ No environment variables required. Configuration is handled through:
 ## Customization
 
 - **Headlines**: Edit state content mappings in `worker.js` (lines 45-56)
-- **Target Elements**: Update selectors in `client.js` (lines 3-7)
+- **Target Elements**: Update selectors in pdc-code `src/page/start/geo-personalization.js`
 - **Cache Duration**: Modify `max-age` in worker.js response headers (default: 3600s)

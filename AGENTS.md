@@ -19,14 +19,13 @@ wrangler tail        # Stream logs from deployed worker
 
 ## Project Structure
 - `worker.js` - Cloudflare Worker (ES6 modules, handles geo-detection & CORS)
-- `client.js` - Client-side script (IIFE pattern, updates DOM based on geo data)
 - `reno-costs.js` - Hand-updated state data for the `/home-reno` endpoint (method in `RENO_COSTS.md`)
-- `reno-client.js` - Client script for /start/home-reno (fills `data-geo-template` elements)
+- Client scripts live in pdc-code `src/page/start/` (geo-personalization.js, home-reno-geo.js), served from files.point.com
 - `wrangler.toml` - Worker configuration (name: geo-ip-detector)
 - The `/` response is used in production: add new endpoints, don't change existing behavior
 
 ## Important Notes
-- Always update `WORKER_URL` in client.js after deployment
+- If the worker URL changes, update `WORKER_URL` in the pdc-code client scripts
 - Follow Cursor rules in `.cursor/rules/` for workflow, testing, and code quality
 - Use innerHTML for headline updates (content contains HTML tags)
 - Cache responses with `Cache-Control: max-age=3600` (1 hour)
