@@ -284,7 +284,13 @@ export default {
       colo: cf?.colo,
     });
 
-    const stateContent = cf?.country === "US" ? getStateContent(cf?.region) : null;
+    // ?state=CO previews a state's content (QA); without it, geo lookup is unchanged
+    const stateOverride = new URL(request.url).searchParams.get("state");
+    const stateContent = stateOverride
+      ? getStateContent(stateOverride)
+      : cf?.country === "US"
+        ? getStateContent(cf?.region)
+        : null;
 
     // Check referer or query parameter to determine if we should use 750k instead of 600k
     const referer = request.headers.get("referer") || "";

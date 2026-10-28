@@ -9,6 +9,7 @@
     const STATE_ANCHOR_SELECTOR = ".headline-underline-decoration"; // State name is appended after this span
     const AMOUNT_ANIMATION_MS = 700;
     const MAX_LOOKUP_MS = 2000; // Skip the amount update if the lookup is slower than this, to avoid a late flicker
+    const STATE_OVERRIDE_PARAM = "geo-state"; // ?geo-state=CO previews a state's content
 
     // Function to send logs to worker
     async function serverLog(level, message, data = {}) {
@@ -135,7 +136,11 @@
         serverLog("info", "Fetching geo data from worker");
         // Pass pathname as query parameter for reliable path detection (fallback if referer is blocked)
         const pathname = window.location.pathname;
-        const workerUrl = `${WORKER_URL}${pathname ? `?path=${encodeURIComponent(pathname)}` : ""}`;
+        const stateOverride = new URLSearchParams(window.location.search).get(STATE_OVERRIDE_PARAM);
+        const workerParams = new URLSearchParams();
+        if (pathname) workerParams.set("path", pathname);
+        if (stateOverride) workerParams.set("state", stateOverride);
+        const workerUrl = `${WORKER_URL}${workerParams.toString() ? `?${workerParams}` : ""}`;
         const response = await fetch(workerUrl);
 
         if (!response.ok) {
