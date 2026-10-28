@@ -200,8 +200,8 @@
             serverLog("info", "Updated avg-homeowner element");
             elementsUpdated.push("avgHomeowner");
           } else {
-            avgHomeowner.textContent = "Homeowners love getting cash from Point's home equity products.";
-            serverLog("info", "Set avg-homeowner element to default text (state not approved)");
+            // Keep the page's own default copy (some pages carry a footnote marker in it)
+            serverLog("info", "Kept avg-homeowner default text (state not approved)");
           }
         } else {
           serverLog("warn", "No avg-homeowner element found", { selector: AVG_HOMEOWNER_SELECTOR });
