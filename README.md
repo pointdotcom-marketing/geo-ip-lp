@@ -15,7 +15,7 @@ npm run deploy       # Deploy to Cloudflare Workers
 ### Integration Steps
 
 1. **Deploy Worker**: Run `npm run deploy` to deploy the geo-detection service
-2. **Client scripts**: live in pdc-code (`src/page/start/geo-personalization.js` and `src/page/start/home-reno-geo.js`), served from `https://files.point.com/code/{staging,prod}/page/start/`. Each /start page's footer custom code loads one with a `<script src>` tag.
+2. **Client scripts**: live in pdc-code (`src/page/start/geo-lp.js` and `src/page/start/geo-reno.js`), served from `https://files.point.com/code/{staging,prod}/page/start/`. Each /start page's footer custom code loads one with a `<script src>` tag.
 
 ## Architecture
 
@@ -29,7 +29,7 @@ Separate endpoint; the original `/` response is untouched.
 
 - **Endpoint**: `GET /home-reno` returns `{ stateAbbr, stateName, tokens }` with tokens `state`, `reno.avg`, `homeValue.pct`, `homeValue.source`. Outside operating states it returns `stateName: null` and no tokens. `?state=CO` previews a state.
 - **Data**: `reno-costs.js` is a hand-updated snapshot; method and sources are in `RENO_COSTS.md`.
-- **Client**: pdc-code `src/page/start/home-reno-geo.js`, loaded from the CDN in the page's footer custom code. An element with `data-geo-template` gets that text with `{token}`s filled in; if any token is missing it shows `data-geo-fallback` instead. `data-geo-group` on a wrapper makes its templated children switch together.
+- **Client**: pdc-code `src/page/start/geo-reno.js`, loaded from the CDN in the page's footer custom code. An element with `data-geo-template` gets that text with `{token}`s filled in; if any token is missing it shows `data-geo-fallback` instead. `data-geo-group` on a wrapper makes its templated children switch together.
 - **QA**: add `?geo-state=CO` to the page URL to preview a state, or `?geo-state=TX` to see fallbacks. Responses are cached for an hour.
 
 | Element | `data-geo-template` | `data-geo-fallback` |
@@ -58,5 +58,5 @@ No environment variables required. Configuration is handled through:
 ## Customization
 
 - **Headlines**: Edit state content mappings in `worker.js` (lines 45-56)
-- **Target Elements**: Update selectors in pdc-code `src/page/start/geo-personalization.js`
+- **Target Elements**: Update selectors in pdc-code `src/page/start/geo-lp.js`
 - **Cache Duration**: Modify `max-age` in worker.js response headers (default: 3600s)
