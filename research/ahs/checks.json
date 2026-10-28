@@ -1,0 +1,456 @@
+{
+  "descriptives": {
+    "projectRecords": 44689,
+    "ownerOccupiedCheck": {
+      "INTSTATUS=1,TENURE=1": 44689
+    },
+    "jobcostSpecial": {
+      "missing(-9)": 79,
+      "zero(free)": 1907
+    },
+    "jjobcostFlags": {
+      "0": 37895,
+      "2": 6784,
+      "1": 10
+    },
+    "jobdiy": {
+      "1": 14770,
+      "2": 29919
+    },
+    "primaryYear": {
+      "2022": 20642,
+      "2023": 13476,
+      "2021": 10082,
+      "not reported": 489
+    },
+    "incomplete": 2673
+  },
+  "censusReplication": {
+    "01": {
+      "projects_thousands": 31,
+      "median_all": 5000,
+      "median_pro": 11100,
+      "n_all": 5,
+      "n_pro": 3
+    },
+    "02": {
+      "projects_thousands": 663,
+      "median_all": 8600,
+      "median_pro": 10000,
+      "n_all": 174,
+      "n_pro": 136
+    },
+    "04": {
+      "projects_thousands": 129,
+      "median_all": 21000,
+      "median_pro": 18600,
+      "n_all": 33,
+      "n_pro": 28
+    },
+    "05": {
+      "projects_thousands": 214,
+      "median_all": 10000,
+      "median_pro": 14000,
+      "n_all": 63,
+      "n_pro": 50
+    },
+    "06": {
+      "projects_thousands": 1133,
+      "median_all": 12800,
+      "median_pro": 14000,
+      "n_all": 332,
+      "n_pro": 280
+    },
+    "07": {
+      "projects_thousands": 557,
+      "median_all": 7000,
+      "median_pro": 16300,
+      "n_all": 150,
+      "n_pro": 81
+    },
+    "08": {
+      "projects_thousands": 329,
+      "median_all": 14200,
+      "median_pro": 19100,
+      "n_all": 110,
+      "n_pro": 73
+    },
+    "09": {
+      "projects_thousands": 186,
+      "median_all": 16000,
+      "median_pro": 23300,
+      "n_all": 57,
+      "n_pro": 32
+    },
+    "10": {
+      "projects_thousands": 173,
+      "median_all": 30000,
+      "median_pro": 41700,
+      "n_all": 42,
+      "n_pro": 31
+    },
+    "11": {
+      "projects_thousands": 989,
+      "median_all": 7000,
+      "median_pro": 15600,
+      "n_all": 282,
+      "n_pro": 170
+    },
+    "12": {
+      "projects_thousands": 7467,
+      "median_all": 5000,
+      "median_pro": 8000,
+      "n_all": 2296,
+      "n_pro": 1421
+    },
+    "13": {
+      "projects_thousands": 4965,
+      "median_all": 8000,
+      "median_pro": 12000,
+      "n_all": 1542,
+      "n_pro": 979
+    },
+    "14": {
+      "projects_thousands": 945,
+      "median_all": 4700,
+      "median_pro": 5700,
+      "n_all": 244,
+      "n_pro": 162
+    },
+    "15": {
+      "projects_thousands": 3863,
+      "median_all": 4800,
+      "median_pro": 7000,
+      "n_all": 1146,
+      "n_pro": 742
+    },
+    "16": {
+      "projects_thousands": 8301,
+      "median_all": 10000,
+      "median_pro": 10000,
+      "n_all": 2559,
+      "n_pro": 2217
+    },
+    "17": {
+      "projects_thousands": 2263,
+      "median_all": 5000,
+      "median_pro": 6900,
+      "n_all": 654,
+      "n_pro": 478
+    },
+    "18": {
+      "projects_thousands": 7892,
+      "median_all": 2800,
+      "median_pro": 4200,
+      "n_all": 2477,
+      "n_pro": 1782
+    },
+    "19": {
+      "projects_thousands": 1852,
+      "median_all": 2100,
+      "median_pro": 3000,
+      "n_all": 573,
+      "n_pro": 397
+    },
+    "20": {
+      "projects_thousands": 3057,
+      "median_all": 1500,
+      "median_pro": 2500,
+      "n_all": 888,
+      "n_pro": 528
+    },
+    "21": {
+      "projects_thousands": 3589,
+      "median_all": 1000,
+      "median_pro": 1800,
+      "n_all": 1111,
+      "n_pro": 743
+    },
+    "22": {
+      "projects_thousands": 9918,
+      "median_all": 540,
+      "median_pro": 990,
+      "n_all": 2976,
+      "n_pro": 1628
+    },
+    "23": {
+      "projects_thousands": 6595,
+      "median_all": 1000,
+      "median_pro": 1500,
+      "n_all": 1995,
+      "n_pro": 1419
+    },
+    "24": {
+      "projects_thousands": 6934,
+      "median_all": 430,
+      "median_pro": 720,
+      "n_all": 2061,
+      "n_pro": 860
+    },
+    "25": {
+      "projects_thousands": 10945,
+      "median_all": 3000,
+      "median_pro": 4000,
+      "n_all": 3309,
+      "n_pro": 2170
+    },
+    "26": {
+      "projects_thousands": 6812,
+      "median_all": 6500,
+      "median_pro": 6900,
+      "n_all": 2242,
+      "n_pro": 2011
+    },
+    "26+27": {
+      "projects_thousands": 12803,
+      "median_all": 5500,
+      "median_pro": 6000,
+      "n_all": 4059,
+      "n_pro": 3602
+    },
+    "27": {
+      "projects_thousands": 5991,
+      "median_all": 4700,
+      "median_pro": 5000,
+      "n_all": 1817,
+      "n_pro": 1591
+    },
+    "28": {
+      "projects_thousands": 548,
+      "median_all": 5000,
+      "median_pro": 5200,
+      "n_all": 128,
+      "n_pro": 111
+    },
+    "29": {
+      "projects_thousands": 7857,
+      "median_all": 1000,
+      "median_pro": 1400,
+      "n_all": 2541,
+      "n_pro": 1786
+    },
+    "30": {
+      "projects_thousands": 8523,
+      "median_all": 600,
+      "median_pro": 690,
+      "n_all": 2756,
+      "n_pro": 1550
+    },
+    "31": {
+      "projects_thousands": 3414,
+      "median_all": 2100,
+      "median_pro": 3000,
+      "n_all": 1106,
+      "n_pro": 816
+    },
+    "32": {
+      "projects_thousands": 4593,
+      "median_all": 2900,
+      "median_pro": 3900,
+      "n_all": 1325,
+      "n_pro": 978
+    },
+    "33": {
+      "projects_thousands": 5700,
+      "median_all": 2300,
+      "median_pro": 4000,
+      "n_all": 1792,
+      "n_pro": 1117
+    },
+    "34": {
+      "projects_thousands": 1442,
+      "median_all": 5000,
+      "median_pro": 13700,
+      "n_all": 396,
+      "n_pro": 247
+    },
+    "35": {
+      "projects_thousands": 2967,
+      "median_all": 3000,
+      "median_pro": 5000,
+      "n_all": 777,
+      "n_pro": 412
+    },
+    "36": {
+      "projects_thousands": 7040,
+      "median_all": 1400,
+      "median_pro": 2900,
+      "n_all": 2197,
+      "n_pro": 1145
+    },
+    "37": {
+      "projects_thousands": 2070,
+      "median_all": 3000,
+      "median_pro": 3500,
+      "n_all": 547,
+      "n_pro": 416
+    },
+    "ALL": {
+      "projects_thousands": 139946,
+      "median_all": 2000,
+      "median_pro": 4000,
+      "n_all": 42703,
+      "n_pro": 28590
+    }
+  },
+  "sensitivity": {
+    "baseline": {
+      "kitchen": {
+        "p25": 5000,
+        "p50": 12000,
+        "p75": 25000,
+        "n": 979
+      },
+      "bathroom": {
+        "p25": 4000,
+        "p50": 8000,
+        "p75": 14700,
+        "n": 1421
+      },
+      "roofHvac": {
+        "p25": 4000,
+        "p50": 7000,
+        "p75": 12000,
+        "n": 5819
+      },
+      "aduAddition": {
+        "p25": 7000,
+        "p50": 20000,
+        "p75": 45000,
+        "n": 387
+      },
+      "outdoor": {
+        "p25": 1800,
+        "p50": 3800,
+        "p75": 7800,
+        "n": 3982
+      },
+      "solarEnergy": {
+        "p25": 1500,
+        "p50": 3500,
+        "p75": 8000,
+        "n": 2310
+      }
+    },
+    "completedOnly": {
+      "kitchen": {
+        "p25": 5000,
+        "p50": 13100,
+        "p75": 25000,
+        "n": 889
+      },
+      "bathroom": {
+        "p25": 4000,
+        "p50": 8000,
+        "p75": 15000,
+        "n": 1296
+      },
+      "roofHvac": {
+        "p25": 4000,
+        "p50": 7000,
+        "p75": 11500,
+        "n": 5652
+      },
+      "aduAddition": {
+        "p25": 7000,
+        "p50": 19600,
+        "p75": 41700,
+        "n": 348
+      },
+      "outdoor": {
+        "p25": 1800,
+        "p50": 3700,
+        "p75": 7600,
+        "n": 3732
+      },
+      "solarEnergy": {
+        "p25": 1500,
+        "p50": 3500,
+        "p75": 8000,
+        "n": 2198
+      }
+    },
+    "excludeImputedCost": {
+      "kitchen": {
+        "p25": 4500,
+        "p50": 10000,
+        "p75": 30000,
+        "n": 799
+      },
+      "bathroom": {
+        "p25": 3000,
+        "p50": 7500,
+        "p75": 15000,
+        "n": 1173
+      },
+      "roofHvac": {
+        "p25": 4000,
+        "p50": 7000,
+        "p75": 12000,
+        "n": 4771
+      },
+      "aduAddition": {
+        "p25": 5500,
+        "p50": 20000,
+        "p75": 50000,
+        "n": 295
+      },
+      "outdoor": {
+        "p25": 1500,
+        "p50": 4000,
+        "p75": 8000,
+        "n": 3399
+      },
+      "solarEnergy": {
+        "p25": 1200,
+        "p50": 3500,
+        "p75": 9000,
+        "n": 1931
+      }
+    },
+    "workYear2022or2023": {
+      "kitchen": {
+        "p25": 5000,
+        "p50": 13700,
+        "p75": 28000,
+        "n": 721
+      },
+      "bathroom": {
+        "p25": 4000,
+        "p50": 8000,
+        "p75": 15000,
+        "n": 1108
+      },
+      "roofHvac": {
+        "p25": 4000,
+        "p50": 7000,
+        "p75": 12000,
+        "n": 4311
+      },
+      "aduAddition": {
+        "p25": 7500,
+        "p50": 19600,
+        "p75": 47500,
+        "n": 281
+      },
+      "outdoor": {
+        "p25": 1800,
+        "p50": 3800,
+        "p75": 8000,
+        "n": 3094
+      },
+      "solarEnergy": {
+        "p25": 1500,
+        "p50": 3700,
+        "p75": 8500,
+        "n": 1737
+      }
+    },
+    "kitchenIncludingAddedKitchen": {
+      "p25": 5000,
+      "p50": 13100,
+      "p75": 28000,
+      "n": 1010
+    }
+  }
+}

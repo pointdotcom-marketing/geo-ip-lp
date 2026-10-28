@@ -1,34 +1,38 @@
+import { RENO_SOURCES, RENO_STATE_DATA } from "./reno-costs.js";
+
 // List of US states with average amounts
+// avgAmount: average funded HEI per state, Sep 2025 - Aug 2026, from HEI_CONTRACTS, rounded to the nearest $1,000.
+// Refreshed 2026-10-28 (method in RENO_COSTS.md). DC and MA keep their 2025 values (under 30 HEIs in the window).
 const US_STATES = [
   { code: "AZ", name: "Arizona", avgAmount: 88000 },
-  { code: "CA", name: "California", avgAmount: 145000 },
-  { code: "CO", name: "Colorado", avgAmount: 100000 },
-  { code: "CT", name: "Connecticut", avgAmount: 90000 },
+  { code: "CA", name: "California", avgAmount: 127000 },
+  { code: "CO", name: "Colorado", avgAmount: 92000 },
+  { code: "CT", name: "Connecticut", avgAmount: 88000 },
   { code: "DC", name: "District of Columbia", avgAmount: 139000 },
-  { code: "FL", name: "Florida", avgAmount: 89000 },
+  { code: "FL", name: "Florida", avgAmount: 86000 },
   { code: "GA", name: "Georgia", avgAmount: 74000 },
-  { code: "HI", name: "Hawaii", avgAmount: 152000 },
-  { code: "IL", name: "Illinois", avgAmount: 75000 },
-  { code: "IN", name: "Indiana", avgAmount: 60000 },
+  { code: "HI", name: "Hawaii", avgAmount: 156000 },
+  { code: "IL", name: "Illinois", avgAmount: 69000 },
+  { code: "IN", name: "Indiana", avgAmount: 57000 },
   { code: "KY", name: "Kentucky" },
   { code: "MA", name: "Massachusetts", avgAmount: 121000 },
-  { code: "MD", name: "Maryland", avgAmount: 89000 },
-  { code: "MI", name: "Michigan", avgAmount: 65000 },
+  { code: "MD", name: "Maryland", avgAmount: 82000 },
+  { code: "MI", name: "Michigan", avgAmount: 64000 },
   { code: "MN", name: "Minnesota", avgAmount: 67000 },
-  { code: "MO", name: "Missouri", avgAmount: 54000 },
-  { code: "NC", name: "North Carolina", avgAmount: 78000 },
-  { code: "NJ", name: "New Jersey", avgAmount: 97000 },
-  { code: "NV", name: "Nevada", avgAmount: 90000 },
-  { code: "NY", name: "New York", avgAmount: 107000 },
-  { code: "OH", name: "Ohio", avgAmount: 57000 },
-  { code: "OR", name: "Oregon", avgAmount: 85000 },
-  { code: "PA", name: "Pennsylvania", avgAmount: 63000 },
-  { code: "SC", name: "South Carolina", avgAmount: 84000 },
-  { code: "TN", name: "Tennessee", avgAmount: 81000 },
-  { code: "UT", name: "Utah", avgAmount: 104000 },
+  { code: "MO", name: "Missouri", avgAmount: 56000 },
+  { code: "NC", name: "North Carolina", avgAmount: 74000 },
+  { code: "NJ", name: "New Jersey", avgAmount: 95000 },
+  { code: "NV", name: "Nevada", avgAmount: 83000 },
+  { code: "NY", name: "New York", avgAmount: 104000 },
+  { code: "OH", name: "Ohio", avgAmount: 55000 },
+  { code: "OR", name: "Oregon", avgAmount: 83000 },
+  { code: "PA", name: "Pennsylvania", avgAmount: 67000 },
+  { code: "SC", name: "South Carolina", avgAmount: 72000 },
+  { code: "TN", name: "Tennessee", avgAmount: 73000 },
+  { code: "UT", name: "Utah", avgAmount: 98000 },
   { code: "VA", name: "Virginia", avgAmount: 80000 },
-  { code: "WA", name: "Washington", avgAmount: 104000 },
-  { code: "WI", name: "Wisconsin", avgAmount: 61000 },
+  { code: "WA", name: "Washington", avgAmount: 101000 },
+  { code: "WI", name: "Wisconsin", avgAmount: 67000 },
 ];
 
 // Headline amount (in thousands of dollars) shown on /start/united-states
@@ -95,6 +99,71 @@ function getStateContent(region) {
   // });
 
   return STATE_CONTENT[normalizedRegion] || null;
+}
+
+const HOME_RENO_PATH = "/home-reno";
+
+function formatUsd(value) {
+  return `$${value.toLocaleString("en-US")}`;
+}
+
+function isAmount(value) {
+  return Number.isFinite(value) && value > 0;
+}
+
+// Flat token map consumed by data-geo-template elements, e.g. {state}, {reno.avg}, {homeValue.pct}
+function buildRenoTokens(state) {
+  const tokens = { state: state.name };
+  const data = RENO_STATE_DATA[state.code];
+  if (!data) return tokens;
+
+  // A template that needs a missing figure keeps its fallback copy
+  if (isAmount(data.homeImprovementAvg)) {
+    tokens["reno.avg"] = formatUsd(Math.round(data.homeImprovementAvg / 1000) * 1000);
+  }
+
+  const homeValue = data.homeValueChange5yr;
+  // Copy reads "rose X%", so only send the stat when values went up
+  if (homeValue && Number.isFinite(homeValue.pct) && homeValue.pct > 0 && RENO_SOURCES[homeValue.source]) {
+    tokens["homeValue.pct"] = `${Math.round(homeValue.pct)}%`;
+    tokens["homeValue.source"] = RENO_SOURCES[homeValue.source].label;
+  }
+
+  return tokens;
+}
+
+function handleHomeReno(request, requestId) {
+  const cf = request.cf;
+  // ?state=CO previews a state's content (used for QA on staging)
+  const stateOverride = new URL(request.url).searchParams.get("state");
+  const state = stateOverride ? getStateContent(stateOverride) : cf?.country === "US" ? getStateContent(cf?.region) : null;
+  const tokens = state ? buildRenoTokens(state) : {};
+
+  console.log(`[HOME_RENO] ${requestId}`, {
+    timestamp: new Date().toISOString(),
+    requestId,
+    country: cf?.country,
+    originalRegion: cf?.region,
+    stateOverride: stateOverride,
+    matchedCode: state?.code ?? "None",
+    tokenCount: Object.keys(tokens).length,
+  });
+
+  return new Response(
+    JSON.stringify({
+      stateAbbr: state?.code ?? null,
+      stateName: state?.name ?? null,
+      tokens: tokens,
+    }),
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Cache-Control": "max-age=3600",
+        "X-Request-Id": requestId,
+      },
+    }
+  );
 }
 
 export default {
@@ -187,6 +256,10 @@ export default {
           },
         });
       }
+    }
+
+    if (new URL(request.url).pathname === HOME_RENO_PATH) {
+      return handleHomeReno(request, requestId);
     }
 
     // Get geo information from the request

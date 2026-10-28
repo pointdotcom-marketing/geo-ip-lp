@@ -25,6 +25,21 @@ npm run deploy       # Deploy to Cloudflare Workers
 - **client.js**: Browser script (IIFE pattern) that fetches location and updates DOM
 - **wrangler.toml**: Worker configuration (name: geo-ip-detector)
 
+## Home Reno Page (`/start/home-reno`)
+
+Separate endpoint and client script; the original `/` response and `client.js` are untouched.
+
+- **Endpoint**: `GET /home-reno` returns `{ stateAbbr, stateName, tokens }` with tokens `state`, `reno.avg`, `homeValue.pct`, `homeValue.source`. Outside operating states it returns `stateName: null` and no tokens. `?state=CO` previews a state.
+- **Data**: `reno-costs.js` is a hand-updated snapshot; method and sources are in `RENO_COSTS.md`.
+- **Client**: `reno-client.js` (minified to `dist/reno-client.min.js` by `npm run build`), pasted into the page's footer custom code in Webflow. An element with `data-geo-template` gets that text with `{token}`s filled in; if any token is missing it shows `data-geo-fallback` instead. `data-geo-group` on a wrapper makes its templated children switch together.
+- **QA**: add `?geo-state=CO` to the page URL to preview a state, or `?geo-state=TX` to see fallbacks. Responses are cached for an hour.
+
+| Element | `data-geo-template` | `data-geo-fallback` |
+| --- | --- | --- |
+| H1 | `Renovate your {state} home with your equity.` | `Renovate your home with your equity.` |
+| Projects intro | `{state} homeowners who used Point for home improvements received {reno.avg} on average. With an HEI, ...` | `About 1 in 4 Point homeowners use their HEI for home improvements. With an HEI, ...` |
+| Closing stat | `Home values in {state} rose {homeValue.pct} over the past 5 years ({homeValue.source}). 30,000+ homeowners have used Point.` | `30,000+ homeowners have used Point.` |
+
 ## Environment Variables
 
 No environment variables required. Configuration is handled through:

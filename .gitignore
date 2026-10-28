@@ -6,3 +6,6 @@ worker-site/
 coverage/
 .DS_Store
 *.log 
+# Internal or licensed research data: keep local, never publish (public repo)
+research/point/
+research/reno-costs-research.json
