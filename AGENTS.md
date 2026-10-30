@@ -1,5 +1,7 @@
 # Agent Operating Instructions - geo-ip-lp
 
+> **Moved:** this worker now lives in pdc-code at `workers/geo-ip/` and deploys from there (PNT-1375). Make changes there; this repo is kept for history until it's archived.
+
 ## Build & Development Commands
 ```bash
 npm install          # Install dependencies

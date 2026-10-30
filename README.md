@@ -1,5 +1,7 @@
 # Geo IP Landing Page
 
+> **Moved:** this worker now lives in pdc-code at `workers/geo-ip/` and deploys from there (PNT-1375). Make changes there; this repo is kept for history until it's archived.
+
 Geo-location detection service using Cloudflare Workers to dynamically personalize landing page content based on visitor's US state location.
 
 ## Usage

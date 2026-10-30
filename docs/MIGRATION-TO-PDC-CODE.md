@@ -1,5 +1,7 @@
 # Moving geo-ip into pdc-code
 
+**Done (PNT-1375, 2026-10-30):** the worker now lives in `pdc-code/workers/geo-ip/` and was deployed from there with the same name and URL; responses matched the old code for all states on `/` and `/home-reno`. What remains is archiving this repo. The plan below is kept for reference.
+
 Plan for moving this worker into `pdc-code/workers/` (PNT-1375).
 
 **Done (PNT-1374):** the client scripts now live in pdc-code `src/page/start/` and the six /start pages load them from `https://files.point.com/code/staging/page/start/` (switch to `/prod/` when shipping). The table below is what remains for the worker.
